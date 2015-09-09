@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
+    }
+}
+
+// 引用 spring boot plugin
+apply plugin: "spring-boot"
+apply plugin: "java"
+apply plugin: "eclipse" 
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+[compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    providedRuntime
+    
+    // spring boot 預設使用 logback 但是我要用 log4j，所以必需把 spring-boot-starter-logging 排除掉
+    compile.exclude module: "spring-boot-starter-logging"
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")    
+    // spring-boot-starter-actuator 提供 "監控 app 運作狀況" 功能 
+    compile("org.springframework.boot:spring-boot-starter-actuator")    
+    // 改用 log4j 不用預設的 logback
+    compile("org.springframework.boot:spring-boot-starter-log4j")
+    
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+    testCompile("org.springframework.boot:spring-boot-starter-test") 
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "2.3"
+}
